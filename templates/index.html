@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Rent Predictor</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #eef2ff;
+            color: #1e293b;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: 50px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .header h1 {
+            font-size: 42px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #64748b;
+            font-size: 18px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 22px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        input,
+        select {
+            padding: 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #4f46e5;
+        }
+
+        small {
+            margin-top: 6px;
+            color: #64748b;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 30px;
+            padding: 16px;
+            border: none;
+            border-radius: 10px;
+            background: #4f46e5;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #4338ca;
+        }
+
+        .error {
+            margin-top: 25px;
+            padding: 15px;
+            background: #fee2e2;
+            color: #991b1b;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .warning {
+            margin-top: 30px;
+            padding: 18px;
+            background: #fef3c7;
+            color: #92400e;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .prediction {
+            margin-top: 20px;
+            padding: 25px;
+            background: #eef2ff;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .prediction h2 {
+            color: #4f46e5;
+            font-size: 32px;
+        }
+
+        @media (max-width: 650px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                margin: 20px;
+                padding: 25px;
+            }
+        }
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button{
+            -webkit-appearance:none;
+            margin:0;
+        }
+
+        input[type=text]{
+            appearance:textfield;
+        }
+    </style>
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>🏠 AI Rent Predictor</h1>
+
+        <p>
+            Estimate monthly property rent using Machine Learning
+        </p>
+    </div>
+
+
+    <form method="POST">
+
+        <div class="form-grid">
+
+            <div class="form-group">
+                <label>BHK</label>
+
+                <input
+                    type="text"
+                    inputmode="numeric"
+                    autocomplete="off"
+                    spellcheck="false"
+                    name="bhk"
+                    value="{{ form_data['bhk'] if form_data else '' }}"
+                    required
+                >
+
+                <small>Choose between 1 and 6 BHK</small>
+            </div>
+
+
+            <div class="form-group">
+                <label>Property Size (sq ft)</label>
+
+                <input
+                    type="text"
+                    inputmode="numeric"
+                    autocomplete="off"
+                    spellcheck="false"
+                    name="size"
+                    value="{{ form_data['size'] if form_data else '' }}"
+                    required
+                >
+
+                <small>Supported size: 10–8000 sq ft</small>
+            </div>
+
+
+            <div class="form-group">
+                <label>Area Type</label>
+
+                <select name="area_type" required>
+
+                    {% for area in ['Super Area', 'Carpet Area', 'Built Area'] %}
+
+                    <option
+                        value="{{ area }}"
+                        {% if form_data and form_data['area_type'] == area %}
+                        selected
+                        {% endif %}
+                    >
+                        {{ area }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+            </div>
+
+
+            <div class="form-group">
+                <label>City</label>
+
+                <select name="city" required>
+
+                    {% for city in ['Mumbai', 'Delhi', 'Bangalore', 'Chennai', 'Hyderabad', 'Kolkata'] %}
+
+                    <option
+                        value="{{ city }}"
+                        {% if form_data and form_data['city'] == city %}
+                        selected
+                        {% endif %}
+                    >
+                        {{ city }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+            </div>
+
+
+            <div class="form-group">
+                <label>Furnishing Status</label>
+
+                <select name="furnishing_status" required>
+
+                    {% for status in ['Unfurnished', 'Semi-Furnished', 'Furnished'] %}
+
+                    <option
+                        value="{{ status }}"
+                        {% if form_data and form_data['furnishing_status'] == status %}
+                        selected
+                        {% endif %}
+                    >
+                        {{ status }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+            </div>
+
+
+            <div class="form-group">
+                <label>Bathrooms</label>
+
+                <input
+                    type="text"
+                    inputmode="numeric"
+                    autocomplete="off"
+                    spellcheck="false"
+                    name="bathroom"
+                    value="{{ form_data['bathroom'] if form_data else '' }}"
+                    required
+                >
+
+                <small>Supported bathrooms: 1–10</small>
+            </div>
+
+
+            <div class="form-group">
+                <label>Current Floor</label>
+
+                <input
+                    type="text"
+                    inputmode="numeric"
+                    autocomplete="off"
+                    spellcheck="false"
+                    name="current_floor"
+                    value="{{ form_data['current_floor'] if form_data else '' }}"
+                    required
+                >
+
+                <small>-1 = Basement, 0 = Ground Floor</small>
+            </div>
+
+
+            <div class="form-group">
+                <label>Total Floors</label>
+
+                <input
+                    type="text"
+                    inputmode="numeric"
+                    autocomplete="off"
+                    spellcheck="false"
+                    name="total_floors"
+                    value="{{ form_data['total_floors'] if form_data else '' }}"
+                    required
+                >                    
+
+                <small>Supported floors: 0–89</small>
+            </div>
+
+        </div>
+
+
+        <button type="submit">
+            Predict Monthly Rent
+        </button>
+
+    </form>
+
+
+    {% if error %}
+
+    <div class="error">
+        {{ error }}
+    </div>
+
+    {% endif %}
+
+
+    {% if warning %}
+
+    <div class="warning">
+        ⚠️ {{ warning }}
+    </div>
+
+    {% endif %}
+
+
+    {% if prediction is not none %}
+
+    <div class="prediction">
+
+        <p>Estimated Monthly Rent</p>
+
+        <h2>
+            ₹{{ "{:,.0f}".format(prediction) }}
+        </h2>
+
+        <p>
+            Based on {{ form_data['bhk'] }} BHK,
+            {{ form_data['size'] }} sq ft property in
+            {{ form_data['city'] }}
+        </p>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const numericInputs = document.querySelectorAll(
+        'input[name="bhk"], \
+         input[name="size"], \
+         input[name="bathroom"], \
+         input[name="current_floor"], \
+         input[name="total_floors"]'
+    );
+
+    numericInputs.forEach(function(input){
+
+        input.addEventListener("input", function(){
+
+            if(input.name === "current_floor"){
+
+                this.value = this.value.replace(/[^0-9-]/g,"");
+
+                if(this.value.indexOf("-") > 0){
+                    this.value = this.value.replace("-","");
+                }
+
+            }
+            else{
+
+                this.value = this.value.replace(/\D/g,"");
+
+            }
+
+        });
+
+    });
+
+});
+
+</script>
+
+</body>
+
+</html>
