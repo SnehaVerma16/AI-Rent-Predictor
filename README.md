@@ -177,7 +177,7 @@ Through this project, I gained practical experience in:
 Aspiring AI & Machine Learning Engineer
 
 - GitHub: https://github.com/SnehaVerma16
-- LinkedIn: *(Add your LinkedIn profile here)*
+- LinkedIn: https://linkedin.com/in/sneha-verma-071b04322
 
 ---
 
