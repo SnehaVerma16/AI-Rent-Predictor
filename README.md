@@ -109,16 +109,6 @@ AI-Rent-Predictor
 
 ---
 
-## 📷 Application Preview
-
-### Home Page
-
-<img src="screenshots/home_predictor.png" width="900"/>
-
-> **Note:** Add your application screenshot inside a `screenshots` folder and name it `home.png`.
-
----
-
 ## 🚀 Run Locally
 
 ### Clone the repository
